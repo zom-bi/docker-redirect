@@ -1,0 +1,18 @@
+version: '2.1'
+
+networks:
+  web:
+    external:
+      name: reverseproxy_web
+
+services:
+  redirect:
+    image: "zombi/redirect"
+    environment:
+      - "REDIRECT_URL=http://example.com/"
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host: example.org"
+      - "traefik.docker.network=reverseproxy_web"
