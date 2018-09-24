@@ -11,11 +11,11 @@ import (
 )
 
 const (
-	listenAddr      = ":8000"
 	timestampFormat = "02/01/2006:15:04:05 -0700"
 )
 
 var (
+	listenAddr    string
 	useProxy      bool
 	useCloudflare bool
 	logRequests   bool
@@ -27,6 +27,9 @@ func init() {
 	e := os.Getenv
 
 	var err error
+
+	listenAddr = e("REDIRECT_LISTEN")
+
 	redirectURL, err = url.Parse(e("REDIRECT_URL"))
 	if err != nil {
 		log.Fatalf("ERROR: Invalid URL supplied: %s", err)
@@ -62,7 +65,9 @@ func main() {
 		h = logMiddleware(h)
 	}
 
-	http.ListenAndServe(listenAddr, h)
+	log.Printf("Listening on %s ...", listenAddr)
+	err := http.ListenAndServe(listenAddr, h)
+	log.Fatalf("Error running server: %s", err)
 }
 
 func logMiddleware(next http.Handler) http.Handler {

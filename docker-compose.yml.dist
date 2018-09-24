@@ -16,3 +16,4 @@ services:
       - "traefik.enable=true"
       - "traefik.frontend.rule=Host: example.org"
       - "traefik.docker.network=reverseproxy_web"
+      - "traefik.port=80"
